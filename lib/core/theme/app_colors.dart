@@ -22,4 +22,9 @@ class AppColors {
 
   static const Color dividerDark = Color(0xFF475569);
   static const Color shadowDark = Color(0xFF000000);
+
+  // Medal palette for charts and rankings
+  static const Color medalGold = Color(0xFFFFD54F);
+  static const Color medalSilver = Color(0xFFB0BEC5);
+  static const Color medalBronze = Color(0xFFCD7F32);
 }

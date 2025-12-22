@@ -7,9 +7,8 @@ import '../core/extensions/string_extensions.dart';
 import '../core/extensions/widget_extensions.dart';
 import '../models/asset_model.dart';
 import '../viewmodels/asset_view_model.dart';
-import '../viewmodels/market_stream_view_model.dart';
 import '../widgets/asset_card.dart';
-import '../widgets/stream_header.dart';
+import '../widgets/top_three_chart.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -18,7 +17,6 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<AssetViewModel>();
     final theme = Theme.of(context);
-    final market = context.watch<MarketStreamViewModel>();
 
     if (vm.status == AssetStatus.loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -81,19 +79,76 @@ class HomeView extends StatelessWidget {
     }
 
     return Scaffold(
-      body: Column(
-        children: [
-          StreamHeader(market: market).addPadding(
-            const EdgeInsets.only(top: 48, bottom: 12, left: 12, right: 12),
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () => vm.loadAssets(limit: 100),
-              child: ListView.separated(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: vm.assets.length,
-                separatorBuilder: (_, __) => const Gap(15),
-                itemBuilder: (context, index) {
+      body: RefreshIndicator(
+        onRefresh: () => vm.loadAssets(limit: 100),
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              pinned: true,
+              expandedHeight: 260,
+              collapsedHeight: 56,
+              backgroundColor: theme.colorScheme.surface,
+              flexibleSpace: LayoutBuilder(
+                builder: (context, constraints) {
+                  final double expandRatio =
+                      (constraints.maxHeight - 56) / (260 - 56);
+                  final bool isExpanded = expandRatio > 0.3;
+                  final double opacity = expandRatio.clamp(0.0, 1.0);
+
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      if (isExpanded)
+                        Opacity(
+                          opacity: opacity,
+                          child: SafeArea(
+                            bottom: false,
+                            child: SingleChildScrollView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  const SizedBox(height: 12),
+                                  TopThreeChart(
+                                    top3Assets: vm.topThreeByMarketCap,
+                                  ).addPadding(
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (!isExpanded)
+                        Opacity(
+                          opacity: 1 - opacity,
+                          child: SafeArea(
+                            bottom: false,
+                            child: Center(
+                              child: TopThreeChart(
+                                top3Assets: vm.topThreeByMarketCap,
+                                compact: true,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            SliverToBoxAdapter(child: const Gap(12)),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, i) {
+                  if (i.isOdd) {
+                    return const Gap(15);
+                  }
+                  final index = i ~/ 2;
+                  if (index >= vm.assets.length) return null;
                   final Asset asset = vm.assets[index];
                   final percent = vm.percentFor(
                     asset.id,
@@ -104,34 +159,21 @@ class HomeView extends StatelessWidget {
                     asset.volumeUsd24HrDouble,
                   );
                   final price = vm.priceFor(asset.id, asset.priceUsdDouble);
-                  final displaySymbol = (asset.symbol ?? '').toUpperCase();
-                  final clippedSymbol =
-                      displaySymbol.isNotEmpty
-                          ? displaySymbol.substring(
-                            0,
-                            displaySymbol.length > 3 ? 3 : displaySymbol.length,
-                          )
-                          : '?';
-                  final displayName = asset.name ?? 'unknown'.translate();
-                  final displayRank = asset.rank ?? '-';
 
                   return AssetCard(
-                    leading: clippedSymbol,
-                    title: displayName,
-                    subtitle:
-                        '${displaySymbol.isNotEmpty ? displaySymbol : 'unknown_symbol'.translate()} • Rank #$displayRank',
+                    asset: asset,
                     price: '\$${price.formatPrice()}',
                     percent: percent,
                     volume: volume,
                     recentlyChanged: vm.recentlyChanged(asset.id),
                     isFavorite: vm.isFavorite(asset.id),
                     onFavoriteTap: () => vm.toggleFavorite(asset.id),
-                  ).addPadding(const EdgeInsets.symmetric(horizontal: 12));
-                },
+                  );
+                }, childCount: vm.assets.length * 2 - 1),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

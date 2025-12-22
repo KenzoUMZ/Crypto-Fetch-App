@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:provider/provider.dart';
 
+import '../core/extensions/double_extensions.dart';
 import '../core/extensions/string_extensions.dart';
 import '../models/asset_model.dart';
 import '../viewmodels/asset_view_model.dart';
@@ -9,16 +10,6 @@ import '../widgets/asset_card.dart';
 
 class FavoritesView extends StatelessWidget {
   const FavoritesView({super.key});
-
-  String _formatPrice(double price) {
-    if (price >= 1000) {
-      return price.toStringAsFixed(2);
-    } else if (price >= 1) {
-      return price.toStringAsFixed(4);
-    } else {
-      return price.toStringAsFixed(6);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,21 +55,10 @@ class FavoritesView extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 itemBuilder: (context, index) {
                   final Asset asset = assets[index];
-                  final symbol = (asset.symbol ?? '').toUpperCase();
-                  final clippedSymbol =
-                      symbol.isEmpty
-                          ? '?'
-                          : symbol.substring(
-                            0,
-                            symbol.length > 3 ? 3 : symbol.length,
-                          );
 
                   return AssetCard(
-                    leading: clippedSymbol,
-                    title: asset.name ?? 'unknown'.translate(),
-                    subtitle:
-                        '${symbol.isNotEmpty ? symbol : 'unknown_symbol'.translate()} • Rank #${asset.rank ?? '-'}',
-                    price: '\$${_formatPrice(asset.priceUsdDouble)}',
+                    asset: asset,
+                    price: '\$${asset.priceUsdDouble.formatPrice()}',
                     percent: asset.changePercent24HrDouble,
                     volume: asset.volumeUsd24HrDouble,
                     recentlyChanged: false,

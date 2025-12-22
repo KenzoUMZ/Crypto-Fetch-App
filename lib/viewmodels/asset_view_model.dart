@@ -105,6 +105,13 @@ class AssetViewModel extends ChangeNotifier {
     return _recentlyChanged.contains(id);
   }
 
+  List<Asset> get topThreeByMarketCap {
+    if (_assets.length < 3) return const [];
+    final list = _assets.where((a) => a.marketCapUsdDouble > 0).toList()
+      ..sort((a, b) => b.marketCapUsdDouble.compareTo(a.marketCapUsdDouble));
+    return list.take(3).toList();
+  }
+
   // CoinCap price streaming retained for reference but not used
 
   void _startBinanceTickerStreams() {
