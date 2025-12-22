@@ -1,0 +1,1 @@
+ /Volumes/External\ Drive/Code/Personal/Crypto-Fetch-App/.dart_tool/flutter_build/3bac1fbec26d0084f0415c72e80b2ee9/dart_build_result.json: 
