@@ -4,12 +4,12 @@ import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class BinanceTicker {
-  final String stream; // e.g. btcusdt@ticker
-  final String symbol; // e.g. BTCUSDT
-  final double lastPrice; // c
-  final double priceChange; // p
-  final double priceChangePercent; // P
-  final double volume; // v (base asset volume)
+  final String stream;
+  final String symbol;
+  final double lastPrice;
+  final double priceChange;
+  final double priceChangePercent;
+  final double volume;
 
   BinanceTicker({
     required this.stream,
@@ -22,7 +22,7 @@ class BinanceTicker {
 }
 
 class BinanceTickersWsClient {
-  final List<String> pairs; // e.g. ['btcusdt','ethusdt'] lowercased
+  final List<String> pairs;
   WebSocketChannel? _channel;
   StreamSubscription? _subscription;
   final StreamController<BinanceTicker> _controller =

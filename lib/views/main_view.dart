@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 
-import '../core/extensions/string_extensions.dart';
-import '../core/theme/app_colors.dart';
+import '../core/core.dart';
 import 'assets_search_view.dart';
 import 'favorites_view.dart';
 import 'home_view.dart';
@@ -51,7 +50,7 @@ class _MainViewState extends State<MainView> {
         padding: const EdgeInsets.all(16),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               color: AppColors.surfaceDark,
               borderRadius: BorderRadius.circular(20),

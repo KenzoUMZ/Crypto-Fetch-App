@@ -11,11 +11,8 @@ class ApiClient {
     required this.baseUrl,
     http.Client? httpClient,
     Map<String, String>? defaultHeaders,
-  })  : _httpClient = httpClient ?? http.Client(),
-        _defaultHeaders = {
-          'accept': 'application/json',
-          ...?defaultHeaders,
-        };
+  }) : _httpClient = httpClient ?? http.Client(),
+       _defaultHeaders = {'accept': 'application/json', ...?defaultHeaders};
 
   Future<dynamic> get(String path, {Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl$path');

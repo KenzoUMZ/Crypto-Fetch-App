@@ -1,5 +1,4 @@
-import '../core/api/api_client.dart';
-import '../core/constants/api_endpoints.dart';
+import '../core/core.dart';
 import '../models/asset_model.dart';
 import '../models/assets_response_model.dart';
 

@@ -2,16 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:provider/provider.dart';
 
-import '../core/extensions/double_extensions.dart';
-import '../core/extensions/string_extensions.dart';
-import '../core/extensions/widget_extensions.dart';
+import '../core/core.dart';
 import '../models/asset_model.dart';
 import '../viewmodels/asset_view_model.dart';
 import '../widgets/asset_card.dart';
 import '../widgets/top_three_chart.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      final _ = context.read<AssetViewModel>()..loadMoreAssets();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +106,9 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: () => vm.loadAssets(limit: 100),
+        onRefresh: () => vm.loadAssets(limit: 30),
         child: CustomScrollView(
+          controller: _scrollController,
           physics: const BouncingScrollPhysics(),
           slivers: [
             SliverAppBar(
@@ -172,6 +199,13 @@ class HomeView extends StatelessWidget {
                 }, childCount: vm.assets.length * 2 - 1),
               ),
             ),
+            if (vm.isLoadingMore)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ),
           ],
         ),
       ),

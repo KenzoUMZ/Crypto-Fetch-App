@@ -1,4 +1,4 @@
-import '../core/extensions/string_extensions.dart';
+import '../core/core.dart';
 
 class Asset {
   final String? id;
@@ -49,7 +49,6 @@ class Asset {
     );
   }
 
-  // Getters com parse numérico
   double get priceUsdDouble => double.tryParse(priceUsd ?? '') ?? 0.0;
   double get changePercent24HrDouble =>
       double.tryParse(changePercent24Hr ?? '') ?? 0.0;
@@ -59,7 +58,6 @@ class Asset {
 
   bool get isPositiveChange => changePercent24HrDouble >= 0;
 
-  /// Mapa de IDs da API para nomes de ícones no CoinCap
   static const Map<String, String> _iconNameMap = {
     'bitcoin': 'btc',
     'ethereum': 'eth',
@@ -86,7 +84,6 @@ class Asset {
   String? get iconUrl {
     if (id == null) return null;
 
-    // Primeiro tenta encontrar um mapeamento direto
     final mappedName = _iconNameMap[id];
     final iconName = mappedName ?? id!.normalizeForIconUrl();
 

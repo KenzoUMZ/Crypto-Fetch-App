@@ -20,6 +20,12 @@
   "search_assets": "Pesquisar Assets",
   "find_cryptocurrencies": "Encontre criptomoedas por nome ou símbolo",
   "favorite_assets": "Seus assets favoritos",
+  "top3_marketcap_title": "Top 3 por Market Cap",
   "posts": "Posts",
-  "load": "Load"
+  "load": "Load",
+  "remove_favorite": "Remover Favorito",
+  "remove_favorite_message": "Tem certeza que deseja remover este asset dos favoritos?",
+  "remove": "Remover",
+  "cancel": "Cancelar",
+  "confirm": "Confirmar"
 }

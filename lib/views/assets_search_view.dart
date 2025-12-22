@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:provider/provider.dart';
 
-import '../core/extensions/double_extensions.dart';
-import '../core/extensions/string_extensions.dart';
+import '../core/core.dart';
 import '../models/asset_model.dart';
 import '../viewmodels/asset_view_model.dart';
 import '../widgets/asset_card.dart';
@@ -17,11 +16,28 @@ class AssetsSearchView extends StatefulWidget {
 
 class _AssetsSearchViewState extends State<AssetsSearchView> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      final _ = context.read<AssetViewModel>()..loadMoreAssets();
+    }
   }
 
   @override
@@ -129,11 +145,19 @@ class _AssetsSearchViewState extends State<AssetsSearchView> {
               : RefreshIndicator(
                 onRefresh: () => vm.loadAssets(search: vm.searchQuery),
                 child: ListView.separated(
+                  controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(16),
-                  itemCount: vm.assets.length,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: vm.assets.length + (vm.isLoadingMore ? 1 : 0),
                   separatorBuilder: (_, __) => const Gap(12),
                   itemBuilder: (context, index) {
+                    if (index >= vm.assets.length) {
+                      return const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
                     final Asset asset = vm.assets[index];
 
                     return AssetCard(

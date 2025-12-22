@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../core/websocket/binance_ws_client.dart';
+import '../core/core.dart';
 import '../models/agg_trade_model.dart';
 
 class MarketStreamViewModel extends ChangeNotifier {

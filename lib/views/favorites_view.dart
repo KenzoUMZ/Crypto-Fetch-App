@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:provider/provider.dart';
 
-import '../core/extensions/double_extensions.dart';
-import '../core/extensions/string_extensions.dart';
+import '../core/core.dart';
 import '../models/asset_model.dart';
 import '../viewmodels/asset_view_model.dart';
 import '../widgets/asset_card.dart';
@@ -52,7 +51,12 @@ class FavoritesView extends StatelessWidget {
               : ListView.separated(
                 itemCount: assets.length,
                 separatorBuilder: (_, __) => const Gap(12),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 12,
+                  bottom: 40,
+                ),
                 itemBuilder: (context, index) {
                   final Asset asset = assets[index];
 
@@ -63,7 +67,20 @@ class FavoritesView extends StatelessWidget {
                     volume: asset.volumeUsd24HrDouble,
                     recentlyChanged: false,
                     isFavorite: true,
-                    onFavoriteTap: () => vm.toggleFavorite(asset.id),
+                    onFavoriteTap: () async {
+                      final confirmed = await context
+                          .showConfirmationBottomSheet(
+                            title: 'remove_favorite'.translate(),
+                            message: 'remove_favorite_message'.translate(),
+                            confirmText: 'remove'.translate(),
+                            cancelText: 'cancel'.translate(),
+                            isDangerous: true,
+                          );
+
+                      if (confirmed == true) {
+                        vm.toggleFavorite(asset.id);
+                      }
+                    },
                   );
                 },
               ),

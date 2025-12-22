@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../core/storage/favorites_storage.dart';
-import '../core/websocket/binance_tickers_ws_client.dart';
-import '../core/websocket/coincap_prices_ws_client.dart';
+import '../core/core.dart';
 import '../models/asset_model.dart';
 import '../models/assets_response_model.dart';
 import '../repositories/asset_repository.dart';
@@ -23,18 +21,23 @@ class AssetViewModel extends ChangeNotifier {
   final Map<String, double> _livePrices = {};
   final Map<String, double> _livePercent = {};
   final Map<String, double> _liveVolume = {};
-  List<CoinCapPricesWsClient> _priceClients = const [];
+  final List<CoinCapPricesWsClient> _priceClients = const [];
   List<BinanceTickersWsClient> _tickerClients = const [];
   Timer? _refreshTimer;
   final Map<String, DateTime> _lastUpdated = {};
   final Set<String> _recentlyChanged = {};
   final Map<String, Timer> _highlightTimers = {};
+  int _currentOffset = 0;
+  bool _hasMore = true;
+  bool _isLoadingMore = false;
 
   AssetStatus get status => _status;
   List<Asset> get assets => _assets;
   String? get error => _error;
   String get searchQuery => _searchQuery;
   Set<String> get favorites => _favorites;
+  bool get hasMore => _hasMore;
+  bool get isLoadingMore => _isLoadingMore;
 
   AssetViewModel({required this.repository}) {
     _initFavorites();
@@ -49,14 +52,19 @@ class AssetViewModel extends ChangeNotifier {
     _status = AssetStatus.loading;
     _error = null;
     _searchQuery = search ?? '';
+    _currentOffset = 0;
+    _hasMore = true;
     notifyListeners();
 
     try {
       final AssetsResponse response = await repository.fetchAssets(
         search: search,
-        limit: limit ?? 100,
+        limit: limit ?? 30,
+        offset: 0,
       );
       _assets = response.data;
+      _currentOffset = _assets.length;
+      _hasMore = _assets.length >= (limit ?? 30);
       _status = AssetStatus.idle;
 
       _startBinanceTickerStreams();
@@ -65,8 +73,37 @@ class AssetViewModel extends ChangeNotifier {
       _error = e.toString();
       _status = AssetStatus.error;
       _assets = [];
+      _hasMore = false;
     }
     notifyListeners();
+  }
+
+  Future<void> loadMoreAssets() async {
+    if (_isLoadingMore || !_hasMore || _status == AssetStatus.loading) return;
+
+    _isLoadingMore = true;
+    notifyListeners();
+
+    try {
+      final AssetsResponse response = await repository.fetchAssets(
+        search: _searchQuery.isEmpty ? null : _searchQuery,
+        limit: 30,
+        offset: _currentOffset,
+      );
+
+      if (response.data.isNotEmpty) {
+        _assets = [..._assets, ...response.data];
+        _currentOffset += response.data.length;
+        _hasMore = response.data.length >= 30;
+      } else {
+        _hasMore = false;
+      }
+    } catch (e) {
+      _hasMore = false;
+    } finally {
+      _isLoadingMore = false;
+      notifyListeners();
+    }
   }
 
   void clearSearch() {
@@ -107,8 +144,10 @@ class AssetViewModel extends ChangeNotifier {
 
   List<Asset> get topThreeByMarketCap {
     if (_assets.length < 3) return const [];
-    final list = _assets.where((a) => a.marketCapUsdDouble > 0).toList()
-      ..sort((a, b) => b.marketCapUsdDouble.compareTo(a.marketCapUsdDouble));
+    final list =
+        _assets.where((a) => a.marketCapUsdDouble > 0).toList()..sort(
+          (a, b) => b.marketCapUsdDouble.compareTo(a.marketCapUsdDouble),
+        );
     return list.take(3).toList();
   }
 

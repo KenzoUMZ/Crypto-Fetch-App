@@ -4,10 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
 
-import 'core/api/api_client.dart';
-import 'core/constants/api_endpoints.dart';
-import 'core/extensions/string_extensions.dart';
-import 'core/theme/app_theme.dart';
+import 'core/core.dart';
 import 'repositories/asset_repository.dart';
 import 'viewmodels/asset_view_model.dart';
 import 'viewmodels/market_stream_view_model.dart';
@@ -58,11 +55,11 @@ class MainApp extends StatelessWidget {
           return const Locale('pt', 'BR');
         },
         localizationsDelegates: [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                LocalJsonLocalization.delegate,
-              ],
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          LocalJsonLocalization.delegate,
+        ],
         debugShowCheckedModeBanner: false,
         theme: AppTheme.darkTheme,
         darkTheme: AppTheme.darkTheme,

@@ -58,30 +58,34 @@ class _CryptoAvatarState extends State<_CryptoAvatar> {
               child: CachedNetworkImage(
                 imageUrl: widget.iconUrl!,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => CircleAvatar(
-                  backgroundColor: widget.theme.colorScheme.primaryContainer,
-                  radius: 20,
-                  child: SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: widget.theme.colorScheme.onPrimaryContainer,
+                placeholder:
+                    (context, url) => CircleAvatar(
+                      backgroundColor:
+                          widget.theme.colorScheme.primaryContainer,
+                      radius: 20,
+                      child: SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: widget.theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => CircleAvatar(
-                  backgroundColor: widget.theme.colorScheme.primaryContainer,
-                  radius: 20,
-                  child: Text(
-                    widget.leading ?? '?',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: widget.theme.colorScheme.onPrimaryContainer,
+                errorWidget:
+                    (context, url, error) => CircleAvatar(
+                      backgroundColor:
+                          widget.theme.colorScheme.primaryContainer,
+                      radius: 20,
+                      child: Text(
+                        widget.leading ?? '?',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: widget.theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
               ),
             ),
           );

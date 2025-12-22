@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../core/theme/app_colors.dart';
+import '../core/core.dart';
 import '../models/asset_model.dart';
 
 class TopThreeChart extends StatelessWidget {
@@ -25,25 +25,27 @@ class TopThreeChart extends StatelessWidget {
     final top3 = top3Assets;
     final values = top3Assets.map((a) => a.marketCapUsdDouble).toList();
     final total = values.fold<double>(0, (sum, v) => sum + v);
-    const List<Color> colors = [
-      AppColors.medalGold,
-      AppColors.medalSilver,
-      AppColors.medalBronze,
-    ];
+    final colors = AppColors.medalColors;
 
     if (compact) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            for (int i = 0; i < 3; i++)
-              _CompactLegendItem(
-                color: colors[i],
-                label: _symbolLabel(top3[i]),
-                percent: _formatPercent(values[i], total),
-              ),
-          ],
+        child: SizedBox(
+          height: 24,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: top3.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              return _CompactLegendItem(
+                color: colors[index % colors.length],
+                label: _symbolLabel(top3[index]),
+                percent: _formatPercent(values[index], total),
+              );
+            },
+          ),
         ),
       );
     }
@@ -57,7 +59,10 @@ class TopThreeChart extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Top 3 por Market Cap', style: theme.textTheme.titleMedium),
+            Text(
+              'top3_marketcap_title'.translate(),
+              style: theme.textTheme.titleMedium,
+            ),
             const SizedBox(height: 12),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
