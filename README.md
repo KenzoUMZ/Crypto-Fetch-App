@@ -1,6 +1,7 @@
-<img width="1080" height="2280" alt="Screenshot_1766463473" src="https://github.com/user-attachments/assets/8d824767-a0ac-4114-aed0-62ebef65a1ff" />
-
-<img width="1080" height="2280" alt="Screenshot_1766463475" src="https://github.com/user-attachments/assets/07c7cc43-0105-4abd-8f82-f053a44898ee" />
+<div style="display: flex; gap: 10px; justify-content: center;">
+  <img width="280" height="590" alt="Screenshot_1766463473" src="https://github.com/user-attachments/assets/8d824767-a0ac-4114-aed0-62ebef65a1ff" />
+  <img width="280" height="590" alt="Screenshot_1766463475" src="https://github.com/user-attachments/assets/07c7cc43-0105-4abd-8f82-f053a44898ee" />
+</div>
 
 # Crypto Fetch App
 
