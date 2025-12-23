@@ -27,5 +27,11 @@
   "remove_favorite_message": "Tem certeza que deseja remover este asset dos favoritos?",
   "remove": "Remover",
   "cancel": "Cancelar",
-  "confirm": "Confirmar"
+  "confirm": "Confirmar",
+  "recent_searches": "Pesquisas Recentes",
+  "no_recent_searches": "Nenhuma pesquisa recente",
+  "search_for_crypto": "Pesquise por criptomoedas acima",
+  "clear_recent_searches": "Limpar histórico",
+  "recent_searches_cleared": "Histórico de pesquisas limpo",
+  "remove_from_recent": "Remover do histórico"
 }

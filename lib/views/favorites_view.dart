@@ -66,21 +66,69 @@ class FavoritesView extends StatelessWidget {
                     percent: asset.changePercent24HrDouble,
                     volume: asset.volumeUsd24HrDouble,
                     recentlyChanged: false,
-                    isFavorite: true,
-                    onFavoriteTap: () async {
-                      final confirmed = await context
-                          .showConfirmationBottomSheet(
-                            title: 'remove_favorite'.translate(),
-                            message: 'remove_favorite_message'.translate(),
-                            confirmText: 'remove'.translate(),
-                            cancelText: 'cancel'.translate(),
-                            isDangerous: true,
-                          );
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '\$${asset.priceUsdDouble.formatPrice()}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: (asset.changePercent24HrDouble >= 0
+                                        ? Colors.green
+                                        : Colors.red)
+                                    .withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                '${asset.changePercent24HrDouble >= 0 ? '+' : ''}${asset.changePercent24HrDouble.toStringAsFixed(2)}%',
+                                style: TextStyle(
+                                  color:
+                                      asset.changePercent24HrDouble >= 0
+                                          ? Colors.green
+                                          : Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(12),
+                        IconButton(
+                          icon: const Icon(Icons.favorite),
+                          color: Theme.of(context).colorScheme.primary,
+                          onPressed: () async {
+                            final confirmed = await context
+                                .showConfirmationBottomSheet(
+                                  title: 'remove_favorite'.translate(),
+                                  message:
+                                      'remove_favorite_message'.translate(),
+                                  confirmText: 'remove'.translate(),
+                                  cancelText: 'cancel'.translate(),
+                                  isDangerous: true,
+                                );
 
-                      if (confirmed == true) {
-                        vm.toggleFavorite(asset.id);
-                      }
-                    },
+                            if (confirmed == true) {
+                              vm.toggleFavorite(asset.id);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),

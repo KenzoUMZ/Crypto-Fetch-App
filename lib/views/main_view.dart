@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 
 import '../core/core.dart';
-import 'assets_search_view.dart';
 import 'favorites_view.dart';
 import 'home_view.dart';
 
@@ -16,11 +15,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeView(),
-    AssetsSearchView(),
-    FavoritesView(),
-  ];
+  final List<Widget> _screens = const [HomeView(), FavoritesView()];
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +25,6 @@ class _MainViewState extends State<MainView> {
         icon: Icons.home_outlined,
         selectedIcon: Icons.home,
         label: 'home'.translate(),
-      ),
-      _NavItem(
-        icon: Icons.search_outlined,
-        selectedIcon: Icons.search,
-        label: 'search'.translate(),
       ),
       _NavItem(
         icon: Icons.favorite_outline,

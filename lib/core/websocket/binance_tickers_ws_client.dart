@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../constants/websocket_endpoints.dart';
+
 class BinanceTicker {
   final String stream;
   final String symbol;
@@ -34,8 +36,7 @@ class BinanceTickersWsClient {
 
   Future<void> connect() async {
     if (pairs.isEmpty) return;
-    final streams = pairs.map((p) => '$p@ticker').join('/');
-    final url = 'wss://stream.binance.com:9443/stream?streams=$streams';
+    final url = WebSocketEndpoints.binanceStreams(pairs);
     _channel = WebSocketChannel.connect(Uri.parse(url));
     _subscription = _channel!.stream.listen(
       (message) {

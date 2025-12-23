@@ -6,12 +6,12 @@ import '../core/core.dart';
 import '../models/asset_model.dart';
 
 class TopThreeChart extends StatelessWidget {
-  final List<Asset> top3Assets;
+  final List<Asset> topAssets;
   final bool compact;
 
   const TopThreeChart({
     super.key,
-    required this.top3Assets,
+    required this.topAssets,
     this.compact = false,
   });
 
@@ -19,13 +19,13 @@ class TopThreeChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (top3Assets.length < 3) {
+    if (topAssets.length < 3) {
       return const SizedBox.shrink();
     }
-    final top3 = top3Assets;
-    final values = top3Assets.map((a) => a.marketCapUsdDouble).toList();
+
+    final values = topAssets.map((a) => a.marketCapUsdDouble).toList();
     final total = values.fold<double>(0, (sum, v) => sum + v);
-    final colors = AppColors.medalColors;
+    const colors = AppColors.medalColors;
 
     if (compact) {
       return Padding(
@@ -36,12 +36,12 @@ class TopThreeChart extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: top3.length,
+            itemCount: topAssets.length,
             separatorBuilder: (_, __) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
               return _CompactLegendItem(
                 color: colors[index % colors.length],
-                label: _symbolLabel(top3[index]),
+                label: _symbolLabel(topAssets[index]),
                 percent: _formatPercent(values[index], total),
               );
             },
@@ -90,17 +90,17 @@ class TopThreeChart extends StatelessWidget {
                     items: [
                       _LegendItem(
                         color: colors[0],
-                        label: _symbolLabel(top3[0]),
+                        label: _symbolLabel(topAssets[0]),
                         valueLabel: _formatPercent(values[0], total),
                       ),
                       _LegendItem(
                         color: colors[1],
-                        label: _symbolLabel(top3[1]),
+                        label: _symbolLabel(topAssets[1]),
                         valueLabel: _formatPercent(values[1], total),
                       ),
                       _LegendItem(
                         color: colors[2],
-                        label: _symbolLabel(top3[2]),
+                        label: _symbolLabel(topAssets[2]),
                         valueLabel: _formatPercent(values[2], total),
                       ),
                     ],

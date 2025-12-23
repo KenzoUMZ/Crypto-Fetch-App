@@ -12,25 +12,22 @@ enum AssetStatus { idle, loading, error }
 class AssetViewModel extends ChangeNotifier {
   final AssetRepository repository;
   final FavoritesStorage _favoritesStorage = FavoritesStorage();
-
-  AssetStatus _status = AssetStatus.idle;
-  List<Asset> _assets = const [];
-  String? _error;
-  String _searchQuery = '';
-  Set<String> _favorites = {};
   final Map<String, double> _livePrices = {};
   final Map<String, double> _livePercent = {};
   final Map<String, double> _liveVolume = {};
-  final List<CoinCapPricesWsClient> _priceClients = const [];
-  List<BinanceTickersWsClient> _tickerClients = const [];
-  Timer? _refreshTimer;
   final Map<String, DateTime> _lastUpdated = {};
   final Set<String> _recentlyChanged = {};
   final Map<String, Timer> _highlightTimers = {};
+  AssetStatus _status = AssetStatus.idle;
+  List<Asset> _assets = const [];
+  Set<String> _favorites = {};
+  List<BinanceTickersWsClient> _tickerClients = const [];
   int _currentOffset = 0;
   bool _hasMore = true;
   bool _isLoadingMore = false;
-
+  String? _error;
+  String _searchQuery = '';
+  Timer? _refreshTimer;
   AssetStatus get status => _status;
   List<Asset> get assets => _assets;
   String? get error => _error;
@@ -151,8 +148,6 @@ class AssetViewModel extends ChangeNotifier {
     return list.take(3).toList();
   }
 
-  // CoinCap price streaming retained for reference but not used
-
   void _startBinanceTickerStreams() {
     final assets = _assets.where((a) => (a.symbol ?? '').isNotEmpty).toList();
     if (assets.isEmpty) return;
@@ -218,9 +213,6 @@ class AssetViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _refreshTimer?.cancel();
-    for (final c in _priceClients) {
-      c.close();
-    }
     for (final c in _tickerClients) {
       c.close();
     }

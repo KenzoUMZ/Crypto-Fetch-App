@@ -1,4 +1,4 @@
-import '../core/core.dart';
+import '../core/constants/api_endpoints.dart';
 
 class Asset {
   final String? id;
@@ -58,35 +58,8 @@ class Asset {
 
   bool get isPositiveChange => changePercent24HrDouble >= 0;
 
-  static const Map<String, String> _iconNameMap = {
-    'bitcoin': 'btc',
-    'ethereum': 'eth',
-    'tether': 'usdt',
-    'ripple': 'xrp',
-    'binance-coin': 'bnb',
-    'solana': 'sol',
-    'cardano': 'ada',
-    'dogecoin': 'doge',
-    'polkadot': 'dot',
-    'litecoin': 'ltc',
-    'bitcoin-cash': 'bch',
-    'chainlink': 'link',
-    'stellar': 'xlm',
-    'monero': 'xmr',
-    'uniswap': 'uni',
-    'wrapped-bitcoin': 'wbtc',
-    'aave': 'aave',
-    'compound': 'comp',
-    'maker': 'mkr',
-    'yearn-finance': 'yfi',
-  };
-
   String? get iconUrl {
-    if (id == null) return null;
-
-    final mappedName = _iconNameMap[id];
-    final iconName = mappedName ?? id!.normalizeForIconUrl();
-
-    return 'https://assets.coincap.io/assets/icons/$iconName@2x.png';
+    if (symbol == null) return null;
+    return ApiEndpoints.assetIcon(symbol!);
   }
 }

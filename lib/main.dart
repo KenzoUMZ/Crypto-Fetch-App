@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'core/core.dart';
 import 'repositories/asset_repository.dart';
 import 'viewmodels/asset_view_model.dart';
-import 'viewmodels/market_stream_view_model.dart';
 import 'views/main_view.dart';
 
 Future<void> main() async {
@@ -32,18 +31,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create:
-              (_) =>
-                  AssetViewModel(repository: assetRepository)
-                    ..loadAssets(limit: 100),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => MarketStreamViewModel()..connectAndSubscribe(),
-        ),
-      ],
+    return ChangeNotifierProvider(
+      create:
+          (_) =>
+              AssetViewModel(repository: assetRepository)
+                ..loadAssets(limit: 100),
       child: MaterialApp(
         title: 'app_title'.translate(),
         supportedLocales: const [Locale('pt', 'BR')],
